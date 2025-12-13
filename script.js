@@ -1,66 +1,88 @@
-// --- Initial Setup ---
+// --- Initial Setup and DEBUGGING CHECKS ---
 const birdGroups = document.querySelectorAll('.bird-group');
 const audio = document.getElementById('hbd-audio');
 const finalMessage = document.getElementById('final-message');
 const cardContainer = document.getElementById('card-container');
 
-// We now only need three successful clicks to trigger the final screen.
 const TOTAL_CLICKS_NEEDED = 3;
 let clickCounter = 0;
-let clickedGroups = new Set(); // To ensure each group is only counted once
+let clickedGroups = new Set();
 
-// --- Functions ---
+// **DEBUGGING 1: Check if all crucial elements were found in the HTML**
+function checkElements() {
+    let errorLog = [];
+    if (birdGroups.length === 0) {
+        errorLog.push("ERROR: Could not find any elements with class 'bird-group'. Check index.html structure.");
+    }
+    if (!audio) {
+        errorLog.push("ERROR: Could not find audio element with ID 'hbd-audio'.");
+    }
+    if (!finalMessage) {
+        errorLog.push("ERROR: Could not find final message element with ID 'final-message'.");
+    }
+    
+    if (errorLog.length > 0) {
+        console.error("--- JAVASCRIPT ELEMENT LOADING ERRORS ---");
+        errorLog.forEach(msg => console.error(msg));
+        alert("CRITICAL ERROR: Card setup failed. See browser console for details.");
+    } else {
+        console.log("SUCCESS: All HTML elements found.");
+    }
+}
+checkElements();
 
-// Function to play the audio and reset it immediately for the next click
-function playAudio() {
-    // Stop and reset audio to the beginning
-    audio.pause();
-    audio.currentTime = 0;
-    // Play the audio
-    audio.play();
+// **DEBUGGING 2: Check for audio file loading failure**
+if (audio) {
+    audio.addEventListener('error', function(e) {
+        console.error("AUDIO ERROR: hbd_tune.mp3 failed to load. Check the filename and path in index.html, and ensure the file is uploaded.", e);
+        alert("WARNING: Audio file (hbd_tune.mp3) failed to load. Interactive features may still work, but there will be no sound.");
+    });
 }
 
-// Function to reveal the final message
+
+// --- Functions (Unchanged) ---
+
+function playAudio() {
+    if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        // The .catch() handles cases where the browser blocks autoplay
+        audio.play().catch(error => {
+            console.warn("Autoplay block detected. Audio playback requires user interaction.");
+        });
+    } else {
+        console.warn("Attempted to play audio, but audio element was not found.");
+    }
+}
+
 function revealFinalMessage() {
-    // 1. Hide the individual bird groups
     birdGroups.forEach(group => {
         group.style.display = 'none';
     });
     
-    // 2. Clear any existing children (just in case) and append the final message
-    // A clean way to show the final screen: hide all and show the one
     cardContainer.innerHTML = ''; 
-    finalMessage.style.display = 'flex'; // Make the final message visible
+    finalMessage.style.display = 'flex'; 
     cardContainer.appendChild(finalMessage);
-    
-    // Optional: You could play a final song or fanfare here!
 }
 
-// --- Main Event Listener ---
+// --- Main Event Listener (Unchanged Logic) ---
 birdGroups.forEach(group => {
     group.addEventListener('click', function() {
         const groupKey = this.dataset.group;
         
-        // 1. Check if this group has already been clicked
         if (clickedGroups.has(groupKey)) {
-            // If already clicked, just exit and do nothing
             return; 
         }
 
-        // 2. Mark this group as clicked (visual feedback from CSS)
         this.classList.add('clicked');
         clickedGroups.add(groupKey);
         
-        // 3. Play the music
         playAudio();
         
-        // 4. Update the counter
         clickCounter++;
-        console.log(`Click count: ${clickCounter}`); // For debugging
+        console.log(`Click count: ${clickCounter}`); 
         
-        // 5. Check if we reached the required count
         if (clickCounter >= TOTAL_CLICKS_NEEDED) {
-            // Wait briefly to let the last song start before revealing the final message
             setTimeout(revealFinalMessage, 1000); 
         }
     });
