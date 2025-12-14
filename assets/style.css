@@ -33,6 +33,27 @@ body, html {
     border-radius: 10px;
     overflow: hidden; /* Keep image contained within the border-radius */
 }
+/* --- 1. Singing Animation Keyframes --- */
+/* Defines a quick head tilt to simulate movement */
+@keyframes singing-tilt {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.02) rotate(1deg); } /* Slightly larger and tilted */
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* --- 2. Class to trigger the animation --- */
+/* This class is added by script.js when the element is clicked */
+.bird-group.is-singing img {
+    /* Apply the animation for a short duration (0.3 seconds) */
+    animation: singing-tilt 0.3s ease-in-out;
+}
+
+/* --- Optional: Dimming Effect --- */
+/* This makes clicked birds look slightly dimmer to show they've already sung */
+.bird-group.clicked img {
+    opacity: 0.7;
+    transition: opacity 0.5s;
+}
 
 .bird-group img {
     width: 100%;
