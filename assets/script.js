@@ -14,7 +14,7 @@ const audioMap = {
 const TOTAL_CLICKS_NEEDED = 4; 
 let clickCounter = 0;
 let clickedGroups = new Set(); 
-let audio = new Audio(); // Create a dynamic audio object
+let audio; // We will define this when playing, to fix the looping bug
 
 // --- Functions ---
 
@@ -48,21 +48,19 @@ function playAudio(groupElement, filename) {
         groupElement.classList.remove('is-singing');
     }, 300); 
 
-    // 2. Play Audio
-    audio.pause();
-    audio.currentTime = 0;
-    
-    // Set the source path (MUST be 'assets/' + filename)
-    audio.src = 'assets/' + filename; 
-    
+    // 2. Play Audio: Recreate the audio element for safety on loop
+    // THIS FIXES THE SILENCE BUG on subsequent plays.
+    audio = new Audio('assets/' + filename); 
+
     audio.play().catch(error => {
         console.warn(`Audio playback error for ${filename}. Autoplay may be blocked by the browser.`, error);
+        // If the audio fails to play, check the browser console for details.
     });
 }
 
 
 function revealFinalMessage() {
-    // 1. Adds final flourish effect
+    // 1. Adds final flourish effect (finished-sequence CSS class)
     cardContainer.classList.add('finished-sequence'); 
     
     // 2. Disable clicking on the hotspots
