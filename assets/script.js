@@ -51,9 +51,9 @@ function playAudio(groupElement, filename) {
         
         note.textContent = notes[Math.floor(Math.random() * notes.length)];
         
-        // --- CRITICAL POSITIONING FIX ---
-        // Pushes the notes to the right side of the hotspot (near the beak).
-        const startLeft = 65 + Math.random() * 20; // 65% to 85% width
+        // --- CRITICAL POSITIONING FIX: SHIFTED LEFT ---
+        // Pushes the notes to the LEFT side of the hotspot (near the beak).
+        const startLeft = 15 + Math.random() * 20; // Launch between 15% and 35% width
         const startBottom = 40 + Math.random() * 20; // 40% to 60% height
         
         note.style.left = `${startLeft}%`; 
