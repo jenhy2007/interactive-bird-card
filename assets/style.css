@@ -10,9 +10,9 @@ body, html {
     overflow-x: hidden; 
 }
 
-/* 2. Main Container - Focus on fitting the backdrop */
+/* 2. Main Container - CRITICAL FOR HOTSPOT POSITIONING */
 #card-container {
-    position: relative; 
+    position: relative; /* All children are positioned relative to this container */
     max-width: 500px;
     margin: 0 auto; 
     z-index: 10; 
@@ -23,19 +23,19 @@ body, html {
     width: 100%;
     height: auto;
     display: block;
-    position: absolute; 
+    position: relative; /* CRITICAL: Using relative here often makes positioning more stable for background images */
     top: 0;
     left: 0;
-    z-index: 1; 
+    z-index: 1; /* Puts the image at the lowest layer */
 }
 
-/* 4. Hotspot Styling (Invisible clickable areas) */
+/* 4. Hotspot Styling (Invisible clickable areas) - CRITICAL FOR INTERACTIVITY */
 .bird-group {
-    position: absolute; 
+    position: absolute; /* Allows precise placement over the backdrop */
     background-color: rgba(0, 0, 0, 0); 
     cursor: pointer;
     border: 2px solid transparent; 
-    z-index: 20; 
+    z-index: 20; /* Ensures hotspots and notes are ABOVE the image */
 }
 
 /* --- ESTIMATED HOTSPOT POSITIONS (USE YOUR FINAL ADJUSTED VALUES HERE) --- */
@@ -86,13 +86,13 @@ body, html {
 .music-note {
     position: absolute; 
     font-size: 30px; 
-    color: #ffcc00; /* BRIGHT GOLD/YELLOW color */
+    color: #ffcc00; 
     opacity: 0; 
     pointer-events: none; 
     white-space: nowrap; 
     z-index: 30; 
     
-    /* --- CRITICAL CHANGE: SLOW DOWN ANIMATION TO 3 SECONDS --- */
+    /* Apply the movement animation */
     animation: fly-away 3s ease-out forwards; 
     
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
