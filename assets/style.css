@@ -15,7 +15,7 @@ body, html {
     position: relative; 
     max-width: 500px;
     margin: 0 auto; 
-    z-index: 10; /* Ensures container establishes a stacking context */
+    z-index: 10; 
 }
 
 /* 3. Backdrop Image - The only visible element */
@@ -23,10 +23,10 @@ body, html {
     width: 100%;
     height: auto;
     display: block;
-    position: absolute; /* CRITICAL: Allows Z-Index to work */
+    position: absolute; 
     top: 0;
     left: 0;
-    z-index: 1; /* Puts the image at the lowest layer */
+    z-index: 1; 
 }
 
 /* 4. Hotspot Styling (Invisible clickable areas) */
@@ -35,7 +35,7 @@ body, html {
     background-color: rgba(0, 0, 0, 0); 
     cursor: pointer;
     border: 2px solid transparent; 
-    z-index: 20; /* CRITICAL: Ensures hotspots and notes are ABOVE the image */
+    z-index: 20; 
 }
 
 /* --- ESTIMATED HOTSPOT POSITIONS (USE YOUR FINAL ADJUSTED VALUES HERE) --- */
@@ -90,10 +90,10 @@ body, html {
     opacity: 0; 
     pointer-events: none; 
     white-space: nowrap; 
-    z-index: 30; /* CRITICAL: Ensures the note is above the hotspot and image */
+    z-index: 30; 
     
-    /* Apply the movement animation */
-    animation: fly-away 1.5s ease-out forwards; 
+    /* --- CRITICAL CHANGE: SLOW DOWN ANIMATION TO 3 SECONDS --- */
+    animation: fly-away 3s ease-out forwards; 
     
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
