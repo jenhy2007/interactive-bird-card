@@ -1,17 +1,16 @@
 // --- Initial Setup ---
 const birdGroups = document.querySelectorAll('.bird-group');
-const finalMessage = document.getElementById('final-message');
 const cardContainer = document.getElementById('card-container');
 
-// Map click count to the audio file segment
+// Map click count to the audio file segment name
 const audioMap = {
-    1: 'sentence1.mp3',
-    2: 'sentence2.mp3',
-    3: 'sentence3.mp3',
-    4: 'sentence4.mp3', // The 4th click plays the last segment
+    1: 'sentence1.mp3', // Blue Jay
+    2: 'sentence2.mp3', // Cardinal
+    3: 'sentence3.mp3', // Woodpeckers
+    4: 'sentence4.mp3', // Sparrows
 };
 
-// We now need 4 clicks to trigger the reveal!
+// We now need 4 clicks to trigger the sequence completion
 const TOTAL_CLICKS_NEEDED = 4; 
 let clickCounter = 0;
 let clickedGroups = new Set(); 
@@ -20,7 +19,7 @@ let audio = new Audio(); // Create a dynamic audio object
 // --- Functions ---
 
 function playAudio(groupElement, filename) {
-    // 1. Trigger Animation
+    // 1. Trigger Animation on the clickable hotspot DIV
     groupElement.classList.add('is-singing');
     
     // Remove the class after the animation is done (0.3 seconds, matching CSS)
@@ -31,25 +30,24 @@ function playAudio(groupElement, filename) {
     // 2. Play Audio
     audio.pause();
     audio.currentTime = 0;
+    
+    // Set the source path (MUST be 'assets/' + filename)
     audio.src = 'assets/' + filename; 
     
     audio.play().catch(error => {
-        console.warn(`Audio playback error for ${filename}.`);
+        console.warn(`Audio playback error for ${filename}. Autoplay may be blocked by the browser.`, error);
     });
 }
 
 function revealFinalMessage() {
-    // No new audio plays on reveal, as the last audio plays on the 4th click
+    // Since the final message (Chinese text) is already visible in the backdrop,
+    // this function primarily adds a final flourish effect.
+    cardContainer.classList.add('finished-sequence'); 
     
-    // Hide all the bird groups
+    // Optional: You could fade out the clickable hotspots here if you wanted.
     birdGroups.forEach(group => {
-        group.style.display = 'none';
+        group.style.pointerEvents = 'none'; // Disable further clicking
     });
-    
-    // Show the final image
-    cardContainer.innerHTML = ''; // Clear the container
-    finalMessage.style.display = 'flex'; 
-    cardContainer.appendChild(finalMessage);
 }
 
 // --- Main Event Listener ---
@@ -57,10 +55,12 @@ birdGroups.forEach(group => {
     group.addEventListener('click', function() {
         const groupKey = this.dataset.group;
         
+        // Stop if this bird has already been clicked
         if (clickedGroups.has(groupKey)) {
             return; 
         }
 
+        // Mark this group as clicked (for visual dimming)
         this.classList.add('clicked');
         clickedGroups.add(groupKey);
         
@@ -71,7 +71,7 @@ birdGroups.forEach(group => {
         playAudio(this, audioFile);
         
         if (clickCounter === TOTAL_CLICKS_NEEDED) {
-            // Last bird click (Sparrows): animate, play sentence4.mp3, THEN reveal
+            // Last click: animate, play sentence4.mp3, THEN trigger the final reveal effect
             setTimeout(revealFinalMessage, 700); // 0.7 second delay to let the music finish
         }
     });
