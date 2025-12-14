@@ -15,7 +15,6 @@ body, html {
     position: relative; /* CRITICAL: Allows hotspots to be positioned absolutely */
     max-width: 500px;
     margin: 0 auto; 
-    /* The height of the container will be determined by the image */
 }
 
 /* 3. Backdrop Image - The only visible element */
@@ -30,11 +29,11 @@ body, html {
     position: absolute; /* Position relative to #card-container */
     background-color: rgba(0, 0, 0, 0); /* Make it invisible */
     cursor: pointer;
-    /* border: 1px solid red; /* UNCOMMENT THIS LINE FOR DEBUGGING */
+    border: 2px solid transparent; /* Ensure border is transparent */
 }
 
-/* --- ESTIMATED HOTSPOT POSITIONS (ADJUST THESE VALUES!) --- */
-/* The positions below must match the layout of your final-card.png */
+/* --- ESTIMATED HOTSPOT POSITIONS (USE YOUR FINAL ADJUSTED VALUES HERE) --- */
+/* If you adjusted these yesterday, make sure you use those same exact values! */
 .bird-group[data-target="blue-jay"] {
     top: 0%; 
     left: 0%; 
@@ -65,21 +64,46 @@ body, html {
 /* --- END ESTIMATED HOTSPOT POSITIONS --- */
 
 
-/* 5. Singing Animation (Targets the hotspot DIV for the visual effect) */
-@keyframes singing-pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); } /* Slight pop/dim */
-    100% { transform: scale(1); }
-}
-
+/* 5. Cleanup: Remove the temporary flash/tilt and dimming effects */
 .bird-group.is-singing {
-    animation: singing-pop 0.3s ease-in-out;
-    /* Optional: Subtle visual feedback for the click */
-    background-color: rgba(255, 255, 0, 0.1); 
+    animation: none; /* Remove flash animation */
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.bird-group.clicked {
+    opacity: 1; /* Keep full opacity for a cleaner look */
+    background-color: transparent !important;
 }
 
-/* 6. Dimming Effect (Shows which birds have already sung) */
-.bird-group.clicked {
-    opacity: 0.5;
-    transition: opacity 0.5s;
+
+/* 6. FINAL EFFECT: Music Note Element Definition */
+.music-note {
+    position: absolute; 
+    font-size: 20px; 
+    color: black;
+    opacity: 0; /* Start hidden */
+    pointer-events: none; /* Crucial: ensures notes don't block clicks */
+    white-space: nowrap; 
+    
+    /* Apply the movement animation */
+    animation: fly-away 1.5s ease-out forwards; 
+    /* Set color to match the bird theme */
+    color: #000080; /* Dark blue color */
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+/* 7. FINAL EFFECT: Music Note Keyframe Animation (The motion) */
+@keyframes fly-away {
+    0% {
+        opacity: 1; /* Start visible */
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    50% {
+        opacity: 1; 
+    }
+    100% {
+        opacity: 0; /* End transparent */
+        transform: translateY(-80px) rotate(30deg) scale(0.8); /* Move up 80px, rotate, and shrink slightly */
+    }
 }
