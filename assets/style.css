@@ -1,91 +1,85 @@
-/* 1. Global Reset and Mobile-First Viewport */
+/* 1. Global Reset and Viewport */
 body, html {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     height: 100%;
     width: 100%;
-    /* Set a nice background color */
-    background-color: #e8f5e9; /* Light green/snowy color */
+    background-color: #e8f5e9; 
     font-family: Arial, sans-serif;
-    overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden; 
 }
 
-/* 2. Main Container for the Card */
+/* 2. Main Container - Focus on fitting the backdrop */
 #card-container {
-    display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    align-items: center;
-    justify-content: flex-start;
-    height: 100vh; /* Viewport Height: crucial for mobile look */
-    max-width: 500px; /* Optional: Sets max width like a typical phone screen */
-    margin: 0 auto; /* Center the card on wider screens */
-    padding: 10px;
-    background-color: #ffffff; /* White card background */
+    position: relative; /* CRITICAL: Allows hotspots to be positioned absolutely */
+    max-width: 500px;
+    margin: 0 auto; 
+    /* The height of the container will be determined by the image */
 }
 
-/* 3. Styling for each bird group */
-.bird-group {
-    width: 100%;
-    cursor: pointer; /* Change cursor to pointer to indicate interactivity */
-    transition: transform 0.2s ease-in-out; /* Smooth transition for click effect */
-    margin-bottom: 5px; 
-    border-radius: 10px;
-    overflow: hidden; /* Keep image contained within the border-radius */
-}
-/* --- 1. Singing Animation Keyframes --- */
-/* Defines a quick head tilt to simulate movement */
-@keyframes singing-tilt {
-    0% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.02) rotate(1deg); } /* Slightly larger and tilted */
-    100% { transform: scale(1) rotate(0deg); }
-}
-
-/* --- 2. Class to trigger the animation --- */
-/* This class is added by script.js when the element is clicked */
-.bird-group.is-singing img {
-    /* Apply the animation for a short duration (0.3 seconds) */
-    animation: singing-tilt 0.3s ease-in-out;
-}
-
-/* --- Optional: Dimming Effect --- */
-/* This makes clicked birds look slightly dimmer to show they've already sung */
-.bird-group.clicked img {
-    opacity: 0.7;
-    transition: opacity 0.5s;
-}
-
-.bird-group img {
+/* 3. Backdrop Image - The only visible element */
+#main-backdrop {
     width: 100%;
     height: auto;
     display: block;
-    opacity: 1; /* Start visible */
 }
 
-/* 4. State when a bird group is clicked (for visual feedback) */
-.bird-group.clicked img {
-    /* Dim the image slightly after it has been clicked */
-    opacity: 0.5; 
+/* 4. Hotspot Styling (Invisible clickable areas) */
+.bird-group {
+    position: absolute; /* Position relative to #card-container */
+    background-color: rgba(0, 0, 0, 0); /* Make it invisible */
+    cursor: pointer;
+    /* border: 1px solid red; /* UNCOMMENT THIS LINE FOR DEBUGGING */
+}
+
+/* --- ESTIMATED HOTSPOT POSITIONS (ADJUST THESE VALUES!) --- */
+/* The positions below must match the layout of your final-card.png */
+.bird-group[data-target="blue-jay"] {
+    top: 0%; 
+    left: 0%; 
+    width: 50%; 
+    height: 40%; 
+}
+
+.bird-group[data-target="cardinal"] {
+    top: 0%; 
+    left: 50%; 
+    width: 50%; 
+    height: 40%; 
+}
+
+.bird-group[data-target="woodpeckers"] {
+    top: 50%; 
+    left: 0%; 
+    width: 50%; 
+    height: 40%; 
+}
+
+.bird-group[data-target="sparrows"] {
+    top: 55%; 
+    left: 55%; 
+    width: 40%; 
+    height: 35%; 
+}
+/* --- END ESTIMATED HOTSPOT POSITIONS --- */
+
+
+/* 5. Singing Animation (Targets the hotspot DIV for the visual effect) */
+@keyframes singing-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); } /* Slight pop/dim */
+    100% { transform: scale(1); }
+}
+
+.bird-group.is-singing {
+    animation: singing-pop 0.3s ease-in-out;
+    /* Optional: Subtle visual feedback for the click */
+    background-color: rgba(255, 255, 0, 0.1); 
+}
+
+/* 6. Dimming Effect (Shows which birds have already sung) */
+.bird-group.clicked {
+    opacity: 0.5;
     transition: opacity 0.5s;
-}
-
-/* 5. Styling for the Final Screen */
-#final-message {
-    width: 100%;
-    /* Initially, this is hidden by JavaScript, but we style it */
-    position: absolute; 
-    top: 0;
-    left: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.95); /* White overlay */
-    z-index: 10; /* Make sure it appears on top of the birds */
-}
-
-#final-message img {
-    width: 90%; /* Scale the final image */
-    height: auto;
-    max-width: 450px; /* Max size for the final image */
 }
