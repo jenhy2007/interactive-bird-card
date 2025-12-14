@@ -12,9 +12,10 @@ body, html {
 
 /* 2. Main Container - Focus on fitting the backdrop */
 #card-container {
-    position: relative; /* CRITICAL: Allows hotspots to be positioned absolutely */
+    position: relative; 
     max-width: 500px;
     margin: 0 auto; 
+    z-index: 10; /* Ensures container establishes a stacking context */
 }
 
 /* 3. Backdrop Image - The only visible element */
@@ -22,18 +23,22 @@ body, html {
     width: 100%;
     height: auto;
     display: block;
+    position: absolute; /* CRITICAL: Allows Z-Index to work */
+    top: 0;
+    left: 0;
+    z-index: 1; /* Puts the image at the lowest layer */
 }
 
 /* 4. Hotspot Styling (Invisible clickable areas) */
 .bird-group {
-    position: absolute; /* Position relative to #card-container */
-    background-color: rgba(0, 0, 0, 0); /* Make it invisible */
+    position: absolute; 
+    background-color: rgba(0, 0, 0, 0); 
     cursor: pointer;
-    border: 2px solid transparent; /* Ensure border is transparent */
+    border: 2px solid transparent; 
+    z-index: 20; /* CRITICAL: Ensures hotspots and notes are ABOVE the image */
 }
 
 /* --- ESTIMATED HOTSPOT POSITIONS (USE YOUR FINAL ADJUSTED VALUES HERE) --- */
-/* If you adjusted these yesterday, make sure you use those same exact values! */
 .bird-group[data-target="blue-jay"] {
     top: 0%; 
     left: 0%; 
@@ -64,15 +69,15 @@ body, html {
 /* --- END ESTIMATED HOTSPOT POSITIONS --- */
 
 
-/* 5. Cleanup: Remove the temporary flash/tilt and dimming effects */
+/* 5. Cleanup: Remove the temporary flash/tilt effects */
 .bird-group.is-singing {
-    animation: none; /* Remove flash animation */
+    animation: none; 
     background-color: transparent !important;
     border-color: transparent !important;
     box-shadow: none !important;
 }
 .bird-group.clicked {
-    opacity: 1; /* Keep full opacity for a cleaner look */
+    opacity: 1; 
     background-color: transparent !important;
 }
 
@@ -80,30 +85,30 @@ body, html {
 /* 6. FINAL EFFECT: Music Note Element Definition */
 .music-note {
     position: absolute; 
-    font-size: 20px; 
-    color: black;
-    opacity: 0; /* Start hidden */
-    pointer-events: none; /* Crucial: ensures notes don't block clicks */
+    font-size: 30px; 
+    color: #ffcc00; /* BRIGHT GOLD/YELLOW color */
+    opacity: 0; 
+    pointer-events: none; 
     white-space: nowrap; 
+    z-index: 30; /* CRITICAL: Ensures the note is above the hotspot and image */
     
     /* Apply the movement animation */
     animation: fly-away 1.5s ease-out forwards; 
-    /* Set color to match the bird theme */
-    color: #000080; /* Dark blue color */
-    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+    
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 /* 7. FINAL EFFECT: Music Note Keyframe Animation (The motion) */
 @keyframes fly-away {
     0% {
-        opacity: 1; /* Start visible */
+        opacity: 1; 
         transform: translateY(0) rotate(0deg) scale(1);
     }
     50% {
         opacity: 1; 
     }
     100% {
-        opacity: 0; /* End transparent */
-        transform: translateY(-80px) rotate(30deg) scale(0.8); /* Move up 80px, rotate, and shrink slightly */
+        opacity: 0; 
+        transform: translateY(-80px) rotate(30deg) scale(0.8); 
     }
 }
