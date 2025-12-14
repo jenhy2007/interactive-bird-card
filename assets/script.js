@@ -51,17 +51,17 @@ function playAudio(groupElement, filename) {
         
         note.textContent = notes[Math.floor(Math.random() * notes.length)];
         
-        // Randomize the starting position (using percentages relative to the hotspot)
-        const startLeft = 40 + Math.random() * 20; 
-        const startBottom = 40 + Math.random() * 20; 
+        // --- CRITICAL POSITIONING FIX ---
+        // Pushes the notes to the right side of the hotspot (near the beak).
+        const startLeft = 65 + Math.random() * 20; // 65% to 85% width
+        const startBottom = 40 + Math.random() * 20; // 40% to 60% height
         
         note.style.left = `${startLeft}%`; 
         note.style.bottom = `${startBottom}%`; 
 
         groupElement.appendChild(note);
 
-        // --- CRITICAL CHANGE: INCREASED TIMEOUT TO 3.1 SECONDS ---
-        // This keeps the note visible until the 3-second CSS animation finishes.
+        // Set a timer to remove the note after its animation finishes 
         setTimeout(() => {
             note.remove();
         }, 3100); 
