@@ -14,7 +14,7 @@ const audioMap = {
 const TOTAL_CLICKS_NEEDED = 4; 
 let clickCounter = 0;
 let clickedGroups = new Set(); 
-let audio; // We will define this when playing, to fix the looping bug
+let audio; 
 
 // --- Functions ---
 
@@ -31,7 +31,7 @@ function resetCard() {
         group.style.pointerEvents = 'auto'; // Re-enable clicking
         group.classList.remove('clicked'); // Remove dimming/clicked state
         group.classList.remove('is-singing'); // Ensure animation class is gone
-        group.style.opacity = 1; // Ensure full opacity
+        group.style.opacity = 1; // Restore full opacity
         group.style.backgroundColor = 'rgba(0, 0, 0, 0)'; // Ensure background is invisible
     });
 
@@ -40,21 +40,44 @@ function resetCard() {
 
 
 function playAudio(groupElement, filename) {
-    // 1. Trigger Animation (Flash the clickable hotspot DIV)
-    groupElement.classList.add('is-singing');
     
-    // Remove the class after the animation is done (0.3 seconds, matching CSS)
+    // 1. Create and launch music notes
+    const notes = ["🎶", "🎵", "♪", "♬"]; 
+    const numberOfNotes = Math.floor(Math.random() * 3) + 2; // 2 to 4 notes
+    
+    for (let i = 0; i < numberOfNotes; i++) {
+        const note = document.createElement('span');
+        note.classList.add('music-note');
+        
+        // Pick a random note symbol
+        note.textContent = notes[Math.floor(Math.random() * notes.length)];
+        
+        // Randomize the starting position (to simulate coming from the mouth area)
+        // Adjust these numbers based on where the bird's mouth is located in the hotspot area
+        note.style.left = `${30 + (i * 5) - 20}%`; 
+        note.style.bottom = `${50 + (i * 3)}%`; 
+
+        groupElement.appendChild(note);
+
+        // Set a timer to remove the note after its animation finishes (1.6 seconds)
+        setTimeout(() => {
+            note.remove();
+        }, 1600);
+    }
+    
+    // 2. Trigger Audio and Animation
+    
+    // Trigger the is-singing class for timing (not visual effect anymore)
+    groupElement.classList.add('is-singing');
     setTimeout(() => {
         groupElement.classList.remove('is-singing');
     }, 300); 
 
-    // 2. Play Audio: Recreate the audio element for safety on loop
-    // THIS FIXES THE SILENCE BUG on subsequent plays.
+    // Play Audio: Recreate the audio element for safety on loop
     audio = new Audio('assets/' + filename); 
 
     audio.play().catch(error => {
-        console.warn(`Audio playback error for ${filename}. Autoplay may be blocked by the browser.`, error);
-        // If the audio fails to play, check the browser console for details.
+        console.warn(`Audio playback error for ${filename}.`);
     });
 }
 
