@@ -42,32 +42,34 @@ function resetCard() {
 function playAudio(groupElement, filename) {
     
     // 1. Create and launch music notes
-    const notes = ["🎶", "🎵", "♪", "♬"]; 
-    const numberOfNotes = Math.floor(Math.random() * 3) + 2; // 2 to 4 notes
+    const notes = ["♩", "♪"]; 
+    const numberOfNotes = 4; 
     
     for (let i = 0; i < numberOfNotes; i++) {
         const note = document.createElement('span');
         note.classList.add('music-note');
         
-        // Pick a random note symbol
         note.textContent = notes[Math.floor(Math.random() * notes.length)];
         
-        // Randomize the starting position (to simulate coming from the mouth area)
-        // Adjust these numbers based on where the bird's mouth is located in the hotspot area
-        note.style.left = `${30 + (i * 5) - 20}%`; 
-        note.style.bottom = `${50 + (i * 3)}%`; 
+        // Randomize the starting position (using percentages relative to the hotspot)
+        const startLeft = 40 + Math.random() * 20; 
+        const startBottom = 40 + Math.random() * 20; 
+        
+        note.style.left = `${startLeft}%`; 
+        note.style.bottom = `${startBottom}%`; 
 
         groupElement.appendChild(note);
 
-        // Set a timer to remove the note after its animation finishes (1.6 seconds)
+        // --- CRITICAL CHANGE: INCREASED TIMEOUT TO 3.1 SECONDS ---
+        // This keeps the note visible until the 3-second CSS animation finishes.
         setTimeout(() => {
             note.remove();
-        }, 1600);
+        }, 3100); 
     }
     
     // 2. Trigger Audio and Animation
     
-    // Trigger the is-singing class for timing (not visual effect anymore)
+    // Trigger the is-singing class for timing
     groupElement.classList.add('is-singing');
     setTimeout(() => {
         groupElement.classList.remove('is-singing');
